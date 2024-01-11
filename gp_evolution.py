@@ -1,13 +1,17 @@
+import os
 import time
-from typing import Tuple
+from typing import Tuple, Dict
 
+import yaml
 from jax import random
 import jax.numpy as jnp
 from cgpax.evaluation import evaluate_lgp_genome
 from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
+from cgpax.utils import CSVLogger
 from mario_gym import MarioEnv
+
 
 # TODO find how many time steps are used in the mario game in java
 # in java the best agent has 20 * 1000 as timer, and every tick decreases the timer by 30 (~700 time steps)
@@ -23,14 +27,6 @@ def evaluate_genomes(genomes_array: jnp.ndarray) -> Tuple[jnp.ndarray, jnp.ndarr
     return jnp.asarray(fitnesses_list), jnp.asarray(percentages_list), jnp.asarray(dead_times_list)
 
 
-def log_data(generation: int, fitnesses: jnp.ndarray, percentages: jnp.ndarray, dead_times: jnp.ndarray,
-             eval_time: float) -> None:
-    max_fitness = max(fitnesses)
-    max_percentage = max(percentages)
-    max_dead_time = max(dead_times)
-    print(f"{generation},{max_fitness:.4f},{max_percentage:.4f},{max_dead_time},{eval_time:.4f}")
-
-
 if __name__ == '__main__':
 
     config = {
@@ -42,7 +38,7 @@ if __name__ == '__main__':
         "p_mut_lhs": 0.3,
         "p_mut_rhs": 0.1,
         "p_mut_functions": 0.1,
-        "n_generations": 100,
+        "n_generations": 5,
         "selection": {
             "elite_size": 1,
             "type": "tournament",
@@ -50,8 +46,11 @@ if __name__ == '__main__':
         },
         "survival": "truncation",
         "crossover": False,
-
+        "run_name": "trial"
     }
+
+    run_name = f"{config['run_name']}_{config['seed']}"
+    os.makedirs(f"results/{run_name}", exist_ok=True)
 
     rnd_key = random.PRNGKey(config["seed"])
 
@@ -69,12 +68,24 @@ if __name__ == '__main__':
     genomes = generate_population(pop_size=config["n_individuals"], genome_mask=genome_mask, rnd_key=genome_key,
                                   weights_mutation_function=weights_mutation_function)
 
+    csv_logger = CSVLogger(
+        filename=f"results/{run_name}/metrics.csv",
+        header=["generation", "max_fitness", "max_percentage", "max_dead_time", "eval_time"]
+    )
+
     for _generation in range(config["n_generations"]):
         start_eval = time.process_time()
         fitnesses, percentages, dead_times = evaluate_genomes(genomes)
         end_eval = time.process_time()
         eval_time = end_eval - start_eval
-        log_data(_generation, fitnesses, percentages, dead_times, eval_time)
+        metrics = {
+            "generation": _generation,
+            "max_fitness": max(fitnesses),
+            "max_percentage": max(percentages),
+            "max_dead_time": max(dead_times),
+            "eval_time": eval_time
+        }
+        csv_logger.log(metrics)
 
         # select parents
         rnd_key, select_key = random.split(rnd_key, 2)
@@ -100,3 +111,9 @@ if __name__ == '__main__':
         # update population
         assert len(genomes) == len(survivals) + len(offspring)
         genomes = jnp.concatenate((survivals, offspring))
+
+    jnp.save(f"results/{run_name}/genotypes.npy", genomes)
+    jnp.save(f"results/{run_name}/fitnesses.npy", fitnesses)
+    file = open(f"results/{run_name}/config.yaml", "w")
+    yaml.dump(config, file)
+    file.close()
