@@ -51,6 +51,8 @@ class MarioEnv(gymnasium.Env):
     def make(cls, level: str = None, observation_space_limit: int = np.inf) -> MarioEnv:
         gateway = JavaGateway()
         java_mario_env = gateway.entry_point
+        if level is not None:
+            java_mario_env.make(level)
         return cls(gateway, java_mario_env, observation_space_limit)
 
     def step(self, action: ActType) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
