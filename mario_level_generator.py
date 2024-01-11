@@ -1,3 +1,5 @@
+import os
+
 from mario_gpt import MarioLM
 
 quantifiers = ["no", "little", "some", "many"]
@@ -18,9 +20,18 @@ for pipe in pipes:
 
 mario_lm = MarioLM()
 
+# use cuda to speed stuff up
+# import torch
+# device = torch.device("cuda")
+# mario_lm = mario_lm.to(device)
+
 for i, prompt in enumerate(all_prompts):
     print(f"{i}/{len(all_prompts)} - {prompt}")
     file_name = f"levels/{prompt.replace(' ', '_')}"
+    if os.path.exists(f"{file_name}.txt"):
+        print("already done")
+        continue
+
     # generate level of size 1400, pump temperature up to ~2.4 for more stochastic but playable levels
     generated_level = mario_lm.sample(
         prompts=[prompt],
