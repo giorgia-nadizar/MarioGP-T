@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Tuple, Dict
+from typing import Tuple
 
 import yaml
 from jax import random
@@ -10,7 +10,7 @@ from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
 from cgpax.utils import CSVLogger
-from mario_gym import MarioEnv
+from mario_gym.mario_env import MarioEnv
 
 
 # TODO find how many time steps are used in the mario game in java
@@ -33,12 +33,12 @@ if __name__ == '__main__':
         "n_rows": 20,
         "n_extra_registers": 5,
         "seed": 0,
-        "n_individuals": 10,
+        "n_individuals": 50,
         "solver": "lgp",
         "p_mut_lhs": 0.3,
         "p_mut_rhs": 0.1,
         "p_mut_functions": 0.1,
-        "n_generations": 2,
+        "n_generations": 100,
         "selection": {
             "elite_size": 1,
             "type": "tournament",
@@ -46,7 +46,8 @@ if __name__ == '__main__':
         },
         "survival": "truncation",
         "crossover": False,
-        "run_name": "trial"
+        "run_name": "trial",
+        "level": "----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n---------------------------------------E------------------------------------------------------------\n-----------------------------------SSSSSSSSSS-------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\nB--------------------------------------------------X------------------------------------------------\nb------------------------------------xxx---SSSSSSSSX-------------------------xxx--------------------\n----?QQ-----------------------------xxX-x-----------------------------------xxX-x-------------------\nx------------------xxx------xxxxx--xx-X--x-------------------------------B-xx-X--x------------------\n-xxxxxxxxxxxxxxxxxxx--xxxxxxx----xxx--X---xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--X---xxxxxxxxxxxxxxxxxx\nXXXXXXXXXXXXXXXXXXXX--XXXXXXX--X-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX--XXXXXXXXXXXXXXXXXXXXXX"
     }
 
     run_name = f"{config['run_name']}_{config['seed']}"
@@ -54,7 +55,7 @@ if __name__ == '__main__':
 
     rnd_key = random.PRNGKey(config["seed"])
 
-    mario_env = MarioEnv.make()
+    mario_env = MarioEnv.make(config["level"])
     update_config_with_env_data(config, mario_env)
 
     genome_mask, mutation_mask = compute_masks(config)
@@ -74,6 +75,7 @@ if __name__ == '__main__':
     )
 
     for _generation in range(config["n_generations"]):
+        print(_generation)
         start_eval = time.process_time()
         fitnesses, percentages, dead_times = evaluate_genomes(genomes)
         end_eval = time.process_time()

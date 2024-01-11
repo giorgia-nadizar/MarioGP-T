@@ -31,6 +31,10 @@ class MarioEnv(gymnasium.Env):
         return string_obs
 
     def _process_observation(self, java_observation):
+        return MarioEnv._process_observation(java_observation, self.grid_side)
+
+    @staticmethod
+    def process_observation(java_observation, grid_side: int):
         array_observations = []
         for obs in java_observation:
             arr = np.zeros(len(obs))
@@ -39,14 +43,12 @@ class MarioEnv(gymnasium.Env):
             array_observations.append(arr)
         observation_array = np.array(array_observations)
         transposed_observation_array = observation_array.transpose()
-        border = (len(transposed_observation_array) - self.grid_side) // 2
-        final_observation = transposed_observation_array[border:border + self.grid_side, border:border + self.grid_side]
+        border = (len(transposed_observation_array) - grid_side) // 2
+        final_observation = transposed_observation_array[border:border + grid_side, border:border + self.grid_side]
         flat_observation = final_observation.flatten()
         flat_observation[flat_observation == 100] = 2
         return flat_observation
 
-    # TODO see how to call Java from here
-    # subprocess.run(["ls", "-l"]) maybe
     @classmethod
     def make(cls, level: str = None, observation_space_limit: int = np.inf) -> MarioEnv:
         gateway = JavaGateway()
