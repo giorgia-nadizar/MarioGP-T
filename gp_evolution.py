@@ -38,7 +38,7 @@ if __name__ == '__main__':
         "p_mut_lhs": 0.3,
         "p_mut_rhs": 0.1,
         "p_mut_functions": 0.1,
-        "n_generations": 5,
+        "n_generations": 2,
         "selection": {
             "elite_size": 1,
             "type": "tournament",
@@ -117,3 +117,8 @@ if __name__ == '__main__':
     file = open(f"results/{run_name}/config.yaml", "w")
     yaml.dump(config, file)
     file.close()
+
+    mario_env.render()
+    best_genome = genomes[jnp.argmax(fitnesses)]
+    evaluate_lgp_genome(best_genome, config, mario_env, episode_length=1000)
+    mario_env.stop_render()
