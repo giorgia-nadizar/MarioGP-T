@@ -48,6 +48,9 @@ for i, prompt in enumerate(all_prompts):
 
     # save text level to file
     generated_level.save(file_name + ".txt")
+    with open(file_name +"-lvl.txt", "w") as f:
+        f.write("\n".join(generated_level.level))
+    generated_level.play()
 
     # Continue generation
     # generated_level_continued = mario_lm.sample(
