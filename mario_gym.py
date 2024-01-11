@@ -65,7 +65,10 @@ class MarioEnv(gymnasium.Env):
         return self._process_observation(reset_object.observation()), reset_object.information()
 
     def render(self) -> RenderFrame | list[RenderFrame] | None:
-        raise NotImplementedError
+        self.java_mario_env.enableVisual()
+
+    def stop_render(self) -> None:
+        self.java_mario_env.disableVisual()
 
     def close(self):
         raise NotImplementedError
