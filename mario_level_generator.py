@@ -2,6 +2,8 @@ import os
 
 from mario_gpt import MarioLM
 
+# code originally from https://github.com/shyamsn97/mario-gpt
+
 quantifiers = ["no", "little", "some", "many"]
 pipes = [f"{n} pipes" for n in quantifiers]
 enemies = [f"{n} enemies" for n in quantifiers]
