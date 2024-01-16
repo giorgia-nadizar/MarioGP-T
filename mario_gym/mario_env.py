@@ -6,7 +6,7 @@ import gymnasium
 import numpy as np
 from gymnasium.core import RenderFrame, ObsType, ActType
 from py4j.java_collections import ListConverter
-from py4j.java_gateway import JavaGateway
+from py4j.java_gateway import JavaGateway, GatewayParameters
 
 
 class MarioEnv(gymnasium.Env):
@@ -31,7 +31,7 @@ class MarioEnv(gymnasium.Env):
         return string_obs
 
     def _process_observation(self, java_observation):
-        return MarioEnv._process_observation(java_observation, self.grid_side)
+        return MarioEnv.process_observation(java_observation, self.grid_side)
 
     @staticmethod
     def process_observation(java_observation, grid_side: int):
@@ -44,14 +44,15 @@ class MarioEnv(gymnasium.Env):
         observation_array = np.array(array_observations)
         transposed_observation_array = observation_array.transpose()
         border = (len(transposed_observation_array) - grid_side) // 2
-        final_observation = transposed_observation_array[border:border + grid_side, border:border + self.grid_side]
+        final_observation = transposed_observation_array[border:border + grid_side, border:border + grid_side]
         flat_observation = final_observation.flatten()
         flat_observation[flat_observation == 100] = 2
         return flat_observation
 
     @classmethod
-    def make(cls, level: str = None, observation_space_limit: int = np.inf) -> MarioEnv:
-        gateway = JavaGateway()
+    def make(cls, level: str = None, observation_space_limit: int = np.inf, port: int = None) -> MarioEnv:
+        gateway_params = GatewayParameters(port=port) if port is not None else None
+        gateway = JavaGateway(gateway_parameters=gateway_params)
         java_mario_env = gateway.entry_point
         if level is not None:
             java_mario_env.make(level)

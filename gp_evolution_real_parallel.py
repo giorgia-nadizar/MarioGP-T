@@ -1,30 +1,18 @@
 import os
 import time
-from typing import Tuple
 
 import yaml
 from jax import random
 import jax.numpy as jnp
-from cgpax.evaluation import evaluate_lgp_genome
+from cgpax.evaluation import evaluate_lgp_genome, parallel_evaluate_lgp_genomes
 from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
 from cgpax.utils import CSVLogger
 from mario_gym.mario_env import MarioEnv
 
-
 # TODO find how many time steps are used in the mario game in java
 # in java the best agent has 20 * 1000 as timer, and every tick decreases the timer by 30 (~700 time steps)
-def evaluate_genomes(genomes_array: jnp.ndarray) -> Tuple[jnp.ndarray, jnp.ndarray, jnp.ndarray]:
-    fitnesses_list = []
-    percentages_list = []
-    dead_times_list = []
-    for genome_array in genomes_array:
-        result = evaluate_lgp_genome(genome_array, config, mario_env, episode_length=1000)
-        fitnesses_list.append(result["reward"])
-        percentages_list.append(result["final_percentage"])
-        dead_times_list.append(result["dead_time"])
-    return jnp.asarray(fitnesses_list), jnp.asarray(percentages_list), jnp.asarray(dead_times_list)
 
 
 if __name__ == '__main__':
@@ -48,6 +36,7 @@ if __name__ == '__main__':
         "crossover": False,
         "run_name": "trial",
         "obs_size": 8,
+        "start_port": 25000,
         "level": "----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n---------------------------------------E------------------------------------------------------------\n-----------------------------------SSSSSSSSSS-------------------------------------------------------\n----------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------\nB--------------------------------------------------X------------------------------------------------\nb------------------------------------xxx---SSSSSSSSX-------------------------xxx--------------------\n----?QQ-----------------------------xxX-x-----------------------------------xxX-x-------------------\nx------------------xxx------xxxxx--xx-X--x-------------------------------B-xx-X--x------------------\n-xxxxxxxxxxxxxxxxxxx--xxxxxxx----xxx--X---xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--X---xxxxxxxxxxxxxxxxxx\nXXXXXXXXXXXXXXXXXXXX--XXXXXXX--X-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX--XXXXXXXXXXXXXXXXXXXXXX"
     }
 
@@ -56,8 +45,9 @@ if __name__ == '__main__':
 
     rnd_key = random.PRNGKey(config["seed"])
 
-    mario_env = MarioEnv.make(config["level"], observation_space_limit=config["obs_size"], port=25006)
-    update_config_with_env_data(config, mario_env)
+    ports = [config["start_port"] + x for x in range(config["n_individuals"])]
+    mario_template_env = MarioEnv.make(config["level"], observation_space_limit=config["obs_size"], port=ports[0])
+    update_config_with_env_data(config, mario_template_env)
 
     genome_mask, mutation_mask = compute_masks(config)
     weights_mutation_function = compute_weights_mutation_function(config)
@@ -78,7 +68,11 @@ if __name__ == '__main__':
     for _generation in range(config["n_generations"]):
         print(_generation)
         start_eval = time.process_time()
-        fitnesses, percentages, dead_times = evaluate_genomes(genomes)
+        results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
+        rearranged_results = {key: [i[key] for i in results] for key in results[0]}
+        fitnesses, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
+            rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
+
         end_eval = time.process_time()
         eval_time = end_eval - start_eval
         metrics = {
@@ -121,7 +115,7 @@ if __name__ == '__main__':
     yaml.dump(config, file)
     file.close()
 
-    mario_env.render()
+    mario_template_env.render()
     best_genome = genomes[jnp.argmax(fitnesses)]
-    evaluate_lgp_genome(best_genome, config, mario_env, episode_length=1000)
-    mario_env.stop_render()
+    evaluate_lgp_genome(best_genome, config, mario_template_env, episode_length=1000)
+    mario_template_env.stop_render()

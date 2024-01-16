@@ -1,9 +1,12 @@
-from typing import Callable, Dict
+from functools import partial
+from multiprocessing import Pool
+from typing import Callable, Dict, List, Tuple
 
 import gymnasium
 import jax.numpy as jnp
 
 from cgpax.encoding import genome_to_cgp_program, genome_to_lgp_program
+from mario_gym.mario_env import MarioEnv
 
 
 def _evaluate_program(program: Callable, program_state_size: int, env: gymnasium.Env,
@@ -48,3 +51,41 @@ def evaluate_lgp_genome(genome: jnp.ndarray, config: Dict, env: gymnasium.Env,
                         episode_length: int = 1000,
                         inner_evaluator: Callable = _evaluate_program) -> Dict:
     return inner_evaluator(genome_to_lgp_program(genome, config), config["n_registers"], env, episode_length)
+
+
+def _evaluate_cgp_genome_for_parallels(config, episode_length, inner_evaluator,
+                                       genome_env_pair: Tuple[jnp.ndarray, int]) -> Dict:
+    genome, port = genome_env_pair
+    env = MarioEnv.make(level=config["level"], observation_space_limit=config["obs_size"], port=port)
+    return evaluate_cgp_genome(genome, config, env, episode_length, inner_evaluator)
+
+
+def _evaluate_lgp_genome_for_parallels(config, episode_length, inner_evaluator,
+                                       genome_env_pair: Tuple[jnp.ndarray, int]) -> Dict:
+    genome, port = genome_env_pair
+    env = MarioEnv.make(level=config["level"], observation_space_limit=config["obs_size"], port=port)
+    return evaluate_lgp_genome(genome, config, env, episode_length, inner_evaluator)
+
+
+def parallel_evaluate_cgp_genomes(genomes: jnp.ndarray, config: Dict, ports: List[int],
+                                  episode_length: int = 1000,
+                                  inner_evaluator: Callable = _evaluate_program) -> List[Dict]:
+    genome_port_pairs = [(genomes[i], ports[i]) for i in range(len(ports))]
+    eval_func = partial(_evaluate_cgp_genome_for_parallels, config, episode_length, inner_evaluator)
+
+    with Pool(len(genome_port_pairs)) as p:
+        res = p.map(eval_func, genome_port_pairs)
+
+    return res
+
+
+def parallel_evaluate_lgp_genomes(genomes: jnp.ndarray, config: Dict, ports: List[int],
+                                  episode_length: int = 1000,
+                                  inner_evaluator: Callable = _evaluate_program) -> List[Dict]:
+    genome_port_pairs = [(genomes[i], ports[i]) for i in range(len(ports))]
+    eval_func = partial(_evaluate_lgp_genome_for_parallels, config, episode_length, inner_evaluator)
+
+    with Pool(len(genome_port_pairs)) as p:
+        res = p.map(eval_func, genome_port_pairs)
+
+    return res
