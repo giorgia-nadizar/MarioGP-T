@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Any, SupportsFloat
 
 import gymnasium
@@ -18,6 +19,7 @@ class MarioEnv(gymnasium.Env):
         original_observation_space = self.java_mario_env.getObservationSpace()
         self.grid_side = min(observation_space_limit, int(np.sqrt(original_observation_space)))
         self.observation_size = self.grid_side ** 2
+        self.render_mode = False
 
     @staticmethod
     def observation_to_ascii(observation: np.ndarray) -> str:
@@ -61,6 +63,8 @@ class MarioEnv(gymnasium.Env):
     def step(self, action: ActType) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
         java_action = ListConverter().convert(action, self.gateway._gateway_client)
         step_object = self.java_mario_env.step(java_action)
+        if self.render_mode:
+            time.sleep(.5)
         return (self._process_observation(step_object.observation()),
                 step_object.reward(), step_object.terminated(), step_object.truncated(), step_object.information())
 
@@ -71,9 +75,11 @@ class MarioEnv(gymnasium.Env):
 
     def render(self) -> RenderFrame | list[RenderFrame] | None:
         self.java_mario_env.enableVisual()
+        self.render_mode = True
 
     def stop_render(self) -> None:
         self.java_mario_env.disableVisual()
+        self.render_mode = False
 
     def close(self):
         raise NotImplementedError
