@@ -50,6 +50,8 @@ available_functions = {
     "lower": JaxFunction(lambda x, y: jnp.add(0.0, x < y), 2, "<"),
     "greater": JaxFunction(lambda x, y: jnp.add(0.0, x > y), 2, ">"),
     "sqrt": JaxFunction(lambda x, y: jnp.sqrt(jnp.abs(x)), 1, "sqrt"),
+    "lower0": JaxFunction(lambda x, y: jnp.add(0.0, x < 0), 1, "<z"),
+    "greater0": JaxFunction(lambda x, y: jnp.add(0.0, x > 0), 1, ">z"),
 }
 
 constants = jnp.asarray([0.1, 1])
