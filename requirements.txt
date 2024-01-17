@@ -1,5 +1,6 @@
 mario_gpt
 jax~=0.4.16
+jaxlib
 numpy~=1.26.3
 yaml~=0.2.5
 pyyaml~=6.0.1
