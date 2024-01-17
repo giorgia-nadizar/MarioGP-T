@@ -37,6 +37,7 @@ if __name__ == '__main__':
         "run_name": "trial",
         "obs_size": 8,
         "start_port": 25000,
+        "genomes_path": "results/trial_3/genotypes.npy",
         "level": "----------------------------------------------------------------------------------------------------\n"
                  "----------------------------------------------------------------------------------------------------\n"
                  "----------------------------------------------------------------------------------------------------\n"
@@ -84,11 +85,14 @@ if __name__ == '__main__':
     mutate_genomes = compile_mutation(config, genome_mask, mutation_mask, weights_mutation_function)
 
     rnd_key, genome_key = random.split(rnd_key, 2)
-    genomes = generate_population(pop_size=config["n_individuals"], genome_mask=genome_mask, rnd_key=genome_key,
-                                  weights_mutation_function=weights_mutation_function)
+    if config.get("genomes_path") is not None:
+        genomes = jnp.load(config["genomes_path"])
+    else:
+        genomes = generate_population(pop_size=config["n_individuals"], genome_mask=genome_mask, rnd_key=genome_key,
+                                      weights_mutation_function=weights_mutation_function)
 
     csv_logger = CSVLogger(
-        filename=f"results/{run_name}/metrics.csv",
+        filename=f"results/{run_name}/metrics{'_contd' if config.get('genomes_path') is not None else ''}.csv",
         header=["generation", "max_fitness", "max_percentage", "max_dead_time", "eval_time"]
     )
 
