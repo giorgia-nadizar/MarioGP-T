@@ -146,7 +146,8 @@ if __name__ == '__main__':
     yaml.dump(config, file)
     file.close()
 
-    mario_template_env.render()
-    best_genome = genomes[jnp.argmax(fitnesses)]
-    evaluate_lgp_genome(best_genome, config, mario_template_env, episode_length=1000)
-    mario_template_env.stop_render()
+    if config.get("visualize", False):
+        mario_template_env.render()
+        best_genome = genomes[jnp.argmax(fitnesses)]
+        evaluate_lgp_genome(best_genome, config, mario_template_env, episode_length=1000)
+        mario_template_env.stop_render()
