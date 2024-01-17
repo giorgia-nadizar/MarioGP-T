@@ -115,6 +115,10 @@ if __name__ == '__main__':
         }
         csv_logger.log(metrics)
 
+        if _generation % config.get("saving_interval", 50) == 0:
+            jnp.save(f"results/{run_name}/genotypes_{_generation}.npy", genomes)
+            jnp.save(f"results/{run_name}/fitnesses_{_generation}.npy", fitnesses)
+
         # select parents
         rnd_key, select_key = random.split(rnd_key, 2)
         parents = select_parents(genomes, fitnesses, select_key)
@@ -140,8 +144,8 @@ if __name__ == '__main__':
         assert len(genomes) == len(survivals) + len(offspring)
         genomes = jnp.concatenate((survivals, offspring))
 
-    jnp.save(f"results/{run_name}/genotypes.npy", genomes)
-    jnp.save(f"results/{run_name}/fitnesses.npy", fitnesses)
+    jnp.save(f"results/{run_name}/genotypes_{_generation}.npy", genomes)
+    jnp.save(f"results/{run_name}/fitnesses_{_generation}.npy", fitnesses)
     file = open(f"results/{run_name}/config.yaml", "w")
     yaml.dump(config, file)
     file.close()
