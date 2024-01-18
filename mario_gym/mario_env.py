@@ -69,7 +69,7 @@ class MarioEnv(gymnasium.Env):
             print(action)
             print()
             print(self.observation_to_ascii(obs))
-            time.sleep(.25)
+            time.sleep(.05)
         return (obs,
                 step_object.reward(), step_object.terminated(), step_object.truncated(), step_object.information())
 
