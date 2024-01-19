@@ -21,3 +21,7 @@ GPT for generating the levels.
 python3 main.py config_file_name
 ```
 
+3. Files will be saved to the `results` folder, within an internal folder named after the run.
+
+4. Kill the Java server once done. 
+While the Python process will close itself at the end of computation, the Java one will not.
