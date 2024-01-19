@@ -38,10 +38,11 @@ def run(config: Dict):
     crossover_genomes = compile_crossover(config)
     mutate_genomes = compile_mutation(config, genome_mask, mutation_mask, weights_mutation_function)
 
-    rnd_key, genome_key = random.split(rnd_key, 2)
+    # note: this can be used for bootstrapping the initial population
     if config.get("genomes_path") is not None:
         genomes = jnp.load(config["genomes_path"])
     else:
+        rnd_key, genome_key = random.split(rnd_key, 2)
         genomes = generate_population(pop_size=config["n_individuals"], genome_mask=genome_mask, rnd_key=genome_key,
                                       weights_mutation_function=weights_mutation_function)
 
@@ -53,20 +54,17 @@ def run(config: Dict):
     best_fitnesses = []
     solved = False
     for _generation in range(config["n_generations"]):
-        update_possible, config["level"] = curriculum_learning.update_level(_generation, best_fitnesses, solved)
-        if solved and not update_possible:
-            break
-
-        print(_generation)
+        print(f"{_generation}/{config['n_generations']}")
         start_eval = time.time()
         results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
         rearranged_results = {key: [i[key] for i in results] for key in results[0]}
         _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
             rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
-        fitnesses = percentages
-
         end_eval = time.time()
         eval_time = end_eval - start_eval
+
+        # note: we take the fitness as the completion percentage and not the actual reward, it can be changed
+        fitnesses = percentages
         best_fitnesses.append(max(fitnesses))
         metrics = {
             "generation": _generation,
@@ -78,16 +76,21 @@ def run(config: Dict):
         csv_logger.log(metrics)
 
         solved = max(percentages) == 1.
+        # note: perform update of level according to the curriculum, if needed/possible
+        update_done, config["level"] = curriculum_learning.update_level(_generation, best_fitnesses, solved)
+        if solved and not update_done:
+            break
 
-        if solved or update_possible or _generation % config.get("saving_interval", 50) == 0:
+        # note: save genomes and fitnesses every 50 generations and when levels are solved/changed
+        if solved or update_done or _generation % config.get("saving_interval", 50) == 0:
             jnp.save(f"results/{run_name}/genotypes_{_generation}.npy", genomes)
             jnp.save(f"results/{run_name}/fitnesses_{_generation}.npy", fitnesses)
 
-        # select parents
+        # note: select parents
         rnd_key, select_key = random.split(rnd_key, 2)
         parents = select_parents(genomes, fitnesses, select_key)
 
-        # compute offspring
+        # note: compute offspring
         rnd_key, mutate_key = random.split(rnd_key, 2)
         mutate_keys = random.split(mutate_key, len(parents))
         if config.get("crossover", False):
@@ -100,14 +103,15 @@ def run(config: Dict):
         offspring_matrix = mutate_genomes(new_parents, mutate_keys)
         offspring = jnp.reshape(offspring_matrix, (-1, offspring_matrix.shape[-1]))
 
-        # select survivals
+        # note: select survivals
         rnd_key, survival_key = random.split(rnd_key, 2)
         survivals = parents if select_survivals is None else select_survivals(genomes, fitnesses, survival_key)
 
-        # update population
+        # note: update population
         assert len(genomes) == len(survivals) + len(offspring)
         genomes = jnp.concatenate((survivals, offspring))
 
+    # note: save information at the end of the run
     jnp.save(f"results/{run_name}/genotypes_{_generation}.npy", genomes)
     jnp.save(f"results/{run_name}/fitnesses_{_generation}.npy", fitnesses)
     with open(f"results/{run_name}/config.yaml", "w") as file:
@@ -115,18 +119,13 @@ def run(config: Dict):
     with open(f"results/{run_name}/curriculum.yaml", "w") as file:
         yaml.dump(curriculum_learning.history, file)
 
-    if config.get("visualize", False):
-        mario_template_env.render()
-        best_genome = genomes[jnp.argmax(fitnesses)]
-        evaluate_lgp_genome(best_genome, config, mario_template_env, episode_length=1000)
-        mario_template_env.stop_render()
-
 
 if __name__ == '__main__':
     config_file = "configs/cv_config.yaml"
+    # note: read config file name if passed
     if len(sys.argv) > 2:
         config_file = f"configs/{sys.argv[1]}"
     configs = cgpax.process_dictionary(cgpax.get_config(config_file))
-    for count, cfg in configs:
+    for count, cfg in enumerate(configs):
         print(f"Run {count + 1}/{len(configs)} starting")
         run(cfg)
