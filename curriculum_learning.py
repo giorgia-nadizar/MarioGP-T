@@ -1,4 +1,15 @@
-from typing import List, Tuple
+from __future__ import annotations
+from typing import List, Tuple, Dict
+
+
+def curriculum_learning_from_config(config: Dict) -> CurriculumLearning:
+    level_prompts = config["levels"].split(";")
+    levels = []
+    for level_file in level_prompts:
+        with open(f"levels/{level_file}.txt", "r") as file:
+            levels.append(file.read())
+    interval = config["n_generations"] / len(levels)
+    return FixedIntervalCurriculumLearning(levels, interval)
 
 
 class CurriculumLearning:
@@ -7,21 +18,27 @@ class CurriculumLearning:
         self.levels = levels
         self.level_idx = 0
         self.level = self.levels[self.level_idx]
+        self.history = {
+            0: self.level
+        }
 
     def check_update_condition(self, generation: int, best_fitnesses: List[float]) -> bool:
         raise NotImplementedError
 
-    def update_level(self, generation: int, best_fitnesses: List[float]) -> Tuple[bool, str]:
-        if self.check_update_condition(generation, best_fitnesses):
-            return True, self.force_increase_level()
+    def update_level(self, generation: int, best_fitnesses: List[float], solved: bool = False) -> Tuple[bool, str]:
+        if solved or self.check_update_condition(generation, best_fitnesses):
+            return self._increase_level(generation)
         else:
             return False, self.level
 
-    def force_increase_level(self) -> str:
+    def _increase_level(self, generation: int) -> Tuple[bool, str]:
+        flag = False
         if self.level_idx < len(self.levels) - 1:
             self.level_idx += 1
             self.level = self.levels[self.level_idx]
-        return self.level
+            self.history[generation] = self.level
+            flag = True
+        return flag, self.level
 
 
 class FixedIntervalCurriculumLearning(CurriculumLearning):
@@ -48,10 +65,10 @@ class FitnessBasedCurriculumLearning(CurriculumLearning):
         stagnation = len(set(best_fitnesses[-self.interval:])) == 1
         return self.stagnation_based == stagnation
 
-    def update_level(self, generation: int, best_fitnesses: List[float]) -> Tuple[bool, str]:
+    def update_level(self, generation: int, best_fitnesses: List[float], solved: bool = False) -> Tuple[bool, str]:
         self.steps_until_next_update -= 1
         return super().update_level(generation, best_fitnesses)
 
-    def force_increase_level(self) -> str:
+    def _increase_level(self, generation: int) -> Tuple[bool, str]:
         self.steps_until_next_update = self.interval
-        return super().force_increase_level()
+        return super()._increase_level(generation)
