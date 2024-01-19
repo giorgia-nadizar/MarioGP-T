@@ -123,7 +123,7 @@ def run(config: Dict):
 if __name__ == '__main__':
     config_file = "configs/cv_config.yaml"
     # note: read config file name if passed
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
     configs = cgpax.process_dictionary(cgpax.get_config(config_file))
     for count, cfg in enumerate(configs):
