@@ -23,10 +23,12 @@ python3 main.py config_file_name
 
 3. Files will be saved to the `results` folder, within an internal folder named after the run.
 
-4. Kill the Java server once done. 
-While the Python process will close itself at the end of computation, the Java one will not.
-
+4. Kill the Java server once done.
+   While the Python process will close itself at the end of computation, the Java one will not.
 
 ## Notes
-- The Java code for the server is available at [https://github.com/giorgia-nadizar/MarioAI](https://github.com/giorgia-nadizar/MarioAI)
-- The code for generating the Mario levels is adapted from [https://github.com/shyamsn97/mario-gpt](https://github.com/shyamsn97/mario-gpt)
+
+- The Java code for the server is available
+  at [https://github.com/giorgia-nadizar/MarioAI](https://github.com/giorgia-nadizar/MarioAI)
+- The code for generating the Mario levels is adapted
+  from [https://github.com/shyamsn97/mario-gpt](https://github.com/shyamsn97/mario-gpt)
