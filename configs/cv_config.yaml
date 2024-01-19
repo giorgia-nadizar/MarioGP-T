@@ -1,0 +1,19 @@
+solver: "lgp"
+seed: [ 0,1,2,3,4,5,6,7,8,9 ]
+n_rows: 20
+n_extra_registers: 5
+n_individuals: 100
+p_mut_lhs: 0.3
+p_mut_rhs: 0.1
+p_mut_functions: 0.1
+n_generations: 2000
+selection:
+  elite_size: 10
+  type: "tournament"
+  tour_size: 3
+survival: "truncation"
+crossover: False
+run_name: "curriculum"
+obs_size: 8
+start_port: 25000
+levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
