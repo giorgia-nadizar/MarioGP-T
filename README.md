@@ -11,7 +11,7 @@ GPT for generating the levels.
    second.
 
 ```bash
- java -cp "server/target/*:server/libs/*" PlayPython
+ java -cp "server/mario/*:server/libs/*" PlayPython
 ```
 
 2. Start the Python evolution script with the appropriate config file.
