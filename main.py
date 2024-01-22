@@ -75,7 +75,7 @@ def run(config: Dict):
         }
         csv_logger.log(metrics)
 
-        solved = max(percentages) == 1.
+        solved = max(percentages) == 1. and config.get("adaptive", True)
         # note: perform update of level according to the curriculum, if needed/possible
         update_done, config["level"] = curriculum_learning.update_level(_generation, best_fitnesses, solved)
         if solved and not update_done:
@@ -121,7 +121,7 @@ def run(config: Dict):
 
 
 if __name__ == '__main__':
-    config_file = "configs/cv_config.yaml"
+    config_file = "configs/cv_adaptive_config.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"

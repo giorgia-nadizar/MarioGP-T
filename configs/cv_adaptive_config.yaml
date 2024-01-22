@@ -16,4 +16,5 @@ crossover: False
 run_name: "curriculum"
 obs_size: 8
 start_port: 25000
-levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
+levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;E_many_pipes,many_enemies,many_blocks"
+adaptive: True
