@@ -16,4 +16,4 @@ crossover: False
 run_name: "difficult"
 obs_size: 8
 start_port: 25000
-levels: "many_pipes,many_enemies,many_blocks"
+levels: "E_many_pipes,many_enemies,many_blocks"
