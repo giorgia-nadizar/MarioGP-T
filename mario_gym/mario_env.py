@@ -20,6 +20,7 @@ class MarioEnv(gymnasium.Env):
         self.grid_side = min(observation_space_limit, int(np.sqrt(original_observation_space)))
         self.observation_size = self.grid_side ** 2
         self.render_mode = False
+        self.delay = 0
 
     @staticmethod
     def observation_to_ascii(observation: np.ndarray) -> str:
@@ -69,7 +70,7 @@ class MarioEnv(gymnasium.Env):
             print(action)
             print()
             print(self.observation_to_ascii(obs))
-            time.sleep(.05)
+            time.sleep(self.delay)
         return (obs,
                 step_object.reward(), step_object.terminated(), step_object.truncated(), step_object.information())
 
@@ -78,9 +79,10 @@ class MarioEnv(gymnasium.Env):
         reset_object = self.java_mario_env.reset()
         return self._process_observation(reset_object.observation()), reset_object.information()
 
-    def render(self) -> RenderFrame | list[RenderFrame] | None:
+    def render(self, delay: float = .05) -> RenderFrame | list[RenderFrame] | None:
         self.java_mario_env.enableVisual()
         self.render_mode = True
+        self.delay = delay
 
     def stop_render(self) -> None:
         self.java_mario_env.disableVisual()
@@ -88,3 +90,6 @@ class MarioEnv(gymnasium.Env):
 
     def close(self):
         raise NotImplementedError
+
+    def save_video(self, file_name: str) -> None:
+        self.java_mario_env.saveVideo(25., file_name)
