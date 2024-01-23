@@ -8,12 +8,12 @@ from jax import random
 import jax.numpy as jnp
 
 import cgpax
-from cgpax.evaluation import evaluate_lgp_genome, parallel_evaluate_lgp_genomes
+from cgpax.evaluation import parallel_evaluate_lgp_genomes
 from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
 from cgpax.utils import CSVLogger
-from curriculum_learning import curriculum_learning_from_config
+from curriculum.curriculum_learning import curriculum_learning_from_config
 from mario_gym.mario_env import MarioEnv
 
 
