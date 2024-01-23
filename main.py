@@ -93,7 +93,7 @@ def run(config: Dict):
 
         # note: we take the fitness as the completion percentage and not the actual reward, it can be changed
         fitnesses = percentages
-        best_fitnesses.append(max(fitnesses))
+        best_fitnesses.append(float(max(fitnesses)))
         metrics = {
             "generation": _generation,
             "max_fitness": max(fitnesses),
