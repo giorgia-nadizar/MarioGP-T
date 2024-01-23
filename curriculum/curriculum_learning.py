@@ -8,10 +8,8 @@ def curriculum_learning_from_config(config: Dict) -> CurriculumLearning:
     levels = []
     for level_prompt in level_prompts:
         current_levels = []
-        with open(f"levels/{level_prompt}.txt", "r") as file:
-            current_levels.append(file.read())
         for level_seed in levels_seeds:
-            with open(f"levels/{level_prompt.replace('E_', '')}_{level_seed}.txt", "r") as file:
+            with open(f"levels/{level_prompt}_{level_seed}.txt", "r") as file:
                 current_levels.append(file.read())
         levels.append(current_levels)
     interval = config["n_generations"] / len(levels)

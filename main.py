@@ -53,7 +53,6 @@ def run(config: Dict):
     )
 
     best_fitnesses = []
-    solved = False
 
     for _generation in range(config["n_generations"]):
         print(f"{_generation}/{config['n_generations']}")
@@ -138,7 +137,7 @@ def run(config: Dict):
 
 
 if __name__ == '__main__':
-    config_file = "configs/cv_fixed_avg_config.yaml"
+    config_file = "configs/cv_parallel_config.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
