@@ -15,7 +15,7 @@ from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_
 from cgpax.utils import CSVLogger
 from curriculum_learning import curriculum_learning_from_config
 from mario_gym.mario_env import MarioEnv
-
+from tqdm import tqdm
 
 def run(config: Dict):
     curriculum_learning = curriculum_learning_from_config(config)
@@ -53,8 +53,8 @@ def run(config: Dict):
 
     best_fitnesses = []
     solved = False
-    for _generation in range(config["n_generations"]):
-        print(f"{_generation}/{config['n_generations']}")
+    for _generation in tqdm(range(config["n_generations"])):
+        #print(f"{_generation}/{config['n_generations']}")
         start_eval = time.time()
         results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
         rearranged_results = {key: [i[key] for i in results] for key in results[0]}
@@ -121,11 +121,11 @@ def run(config: Dict):
 
 
 if __name__ == '__main__':
-    config_file = "configs/cv_adaptive_config.yaml"
     # note: read config file name if passed
-    if len(sys.argv) > 1:
-        config_file = f"configs/{sys.argv[1]}"
-    configs = cgpax.process_dictionary(cgpax.get_config(config_file))
-    for count, cfg in enumerate(configs):
-        print(f"Run {count + 1}/{len(configs)} starting")
-        run(cfg)
+    config = cgpax.get_config(sys.argv[1])
+    my_task_id = int(sys.argv[2])
+    config["seed"] = my_task_id
+    config["run_name"] = config["run_name"] + f"_seed_{my_task_id}"
+    print(config)
+    print(f"Run starting")
+    run(config)

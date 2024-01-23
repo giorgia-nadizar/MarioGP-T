@@ -13,7 +13,7 @@ selection:
   tour_size: 3
 survival: "truncation"
 crossover: False
-run_name: "curriculum"
+run_name: "third"
 obs_size: 8
 start_port: 25000
 levels: "some_pipes,some_enemies,little_blocks"
