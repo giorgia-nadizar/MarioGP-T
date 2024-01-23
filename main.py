@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-from typing import Dict
+from typing import Dict, List
 
 import yaml
 from jax import random
@@ -15,6 +15,10 @@ from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_
 from cgpax.utils import CSVLogger
 from curriculum.curriculum_learning import curriculum_learning_from_config
 from mario_gym.mario_env import MarioEnv
+
+
+def detect_stagnation(best_fits: List, n: int) -> bool:
+    return len(set(best_fits[-n:])) == 1
 
 
 def run(config: Dict):
@@ -53,11 +57,12 @@ def run(config: Dict):
     )
 
     best_fitnesses = []
-
+    current_index = 0
+    skip_tracker = {}
     for _generation in range(config["n_generations"]):
         print(f"{_generation}/{config['n_generations']}")
         start_eval = time.time()
-        if isinstance(current_levels, list):
+        if isinstance(current_levels, list) and not config.get("sequential", False):
             all_percentages, all_dead_times = [], []
             for current_level in current_levels:
                 config["level"] = current_level
@@ -72,6 +77,13 @@ def run(config: Dict):
             percentages = jnp.mean(percentages_array, axis=0)
             dead_times = jnp.mean(dead_times_array, axis=0)
         else:
+            if isinstance(current_levels, list) and config.get("sequential", False):
+                stagnation = detect_stagnation(best_fitnesses, config.get("stagnation_interval", 10))
+                if stagnation:
+                    current_index += 1
+                    current_index = current_index % len(current_levels)
+                    skip_tracker[_generation] = current_index
+                    config["level"] = current_levels[current_index]
             results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
             rearranged_results = {key: [i[key] for i in results] for key in results[0]}
             _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
@@ -101,6 +113,7 @@ def run(config: Dict):
         if solved or update_done or _generation % config.get("saving_interval", 50) == 0:
             jnp.save(f"results/{run_name}/genotypes_{_generation}.npy", genomes)
             jnp.save(f"results/{run_name}/fitnesses_{_generation}.npy", fitnesses)
+            current_index = 0
 
         # note: select parents
         rnd_key, select_key = random.split(rnd_key, 2)
@@ -134,10 +147,13 @@ def run(config: Dict):
         yaml.dump(config, file)
     with open(f"results/{run_name}/curriculum.yaml", "w") as file:
         yaml.dump(curriculum_learning.history, file)
+    if config.get("sequential", False):
+        with open(f"results/{run_name}/sequential_skips.yaml", "w") as file:
+            yaml.dump(skip_tracker, file)
 
 
 if __name__ == '__main__':
-    config_file = "configs/cv_parallel_config.yaml"
+    config_file = "configs/cv_sequential_config.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
