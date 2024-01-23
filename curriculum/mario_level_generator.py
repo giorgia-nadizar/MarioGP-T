@@ -55,7 +55,7 @@ for i, prompt in enumerate(all_prompts):
         )
 
         # level to string
-        level_string = "\n".join(generated_level.level)
+        level_string = "\n".join(generated_level.current_levels)
         playability_result = level_scorer.score(level_string)
         if playability_result.getCompletionPercentage() < 1:
             print(f"retry {attempt + 1}")

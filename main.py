@@ -8,18 +8,19 @@ from jax import random
 import jax.numpy as jnp
 
 import cgpax
-from cgpax.evaluation import evaluate_lgp_genome, parallel_evaluate_lgp_genomes
+from cgpax.evaluation import parallel_evaluate_lgp_genomes
 from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
 from cgpax.utils import CSVLogger
-from curriculum_learning import curriculum_learning_from_config
+from curriculum.curriculum_learning import curriculum_learning_from_config
 from mario_gym.mario_env import MarioEnv
 from tqdm import tqdm
 
 def run(config: Dict):
     curriculum_learning = curriculum_learning_from_config(config)
-    config["level"] = curriculum_learning.level
+    current_levels = curriculum_learning.current_levels
+    config["level"] = current_levels if isinstance(current_levels, str) else current_levels[0]
 
     run_name = f"{config['run_name']}_{config['seed']}"
     os.makedirs(f"results/{run_name}", exist_ok=True)
@@ -52,14 +53,28 @@ def run(config: Dict):
     )
 
     best_fitnesses = []
-    solved = False
     for _generation in tqdm(range(config["n_generations"])):
         #print(f"{_generation}/{config['n_generations']}")
         start_eval = time.time()
-        results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
-        rearranged_results = {key: [i[key] for i in results] for key in results[0]}
-        _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
-            rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
+        if isinstance(current_levels, list):
+            all_percentages, all_dead_times = [], []
+            for current_level in current_levels:
+                config["level"] = current_level
+                results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
+                rearranged_results = {key: [i[key] for i in results] for key in results[0]}
+                _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
+                    rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
+                all_percentages.append(percentages)
+                all_dead_times.append(dead_times)
+            percentages_array = jnp.vstack(all_percentages)
+            dead_times_array = jnp.vstack(all_dead_times)
+            percentages = jnp.mean(percentages_array, axis=0)
+            dead_times = jnp.mean(dead_times_array, axis=0)
+        else:
+            results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
+            rearranged_results = {key: [i[key] for i in results] for key in results[0]}
+            _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
+                rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
         end_eval = time.time()
         eval_time = end_eval - start_eval
 
@@ -77,7 +92,7 @@ def run(config: Dict):
 
         solved = max(percentages) == 1. and config.get("adaptive", True)
         # note: perform update of level according to the curriculum, if needed/possible
-        update_done, config["level"] = curriculum_learning.update_level(_generation, best_fitnesses, solved)
+        update_done, current_levels = curriculum_learning.update_level(_generation, best_fitnesses, solved)
         if solved and not update_done:
             break
 

@@ -1,0 +1,3 @@
+levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;E_many_pipes,many_enemies,many_blocks"
+test_levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
+test_seeds: [0,1,2,3,4]
