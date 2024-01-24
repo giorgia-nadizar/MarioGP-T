@@ -6,18 +6,16 @@ n_individuals: 100
 p_mut_lhs: 0.3
 p_mut_rhs: 0.1
 p_mut_functions: 0.1
-n_generations: 2000
+n_generations: 667
 selection:
   elite_size: 10
   type: "tournament"
   tour_size: 3
 survival: "truncation"
 crossover: False
-run_name: "curriculum_sequential"
+run_name: "difficult_parallel"
 obs_size: 8
 start_port: 25000
-levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
+levels: "many_pipes,many_enemies,many_blocks"
 adaptive: False
 levels_seeds: "0;2;4"
-sequential: True
-stagnation_interval: 10
