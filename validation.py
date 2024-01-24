@@ -31,6 +31,9 @@ def get_levels(validation_config: Dict) -> Dict[str, str]:
         for test_seed in validation_config["test_seeds"].split(";"):
             with open(f"test_levels/{test_level_prompt}_{test_seed}.txt", "r") as file:
                 levels[f"test_{test_level_prompt}_{test_seed}"] = file.read()
+    for original_level in validation_config["original_levels"].split(";"):
+        with open(f"original_levels/lvl-{original_level}.txt", "r") as file:
+            levels[f"original_{original_level}"] = file.read()
     return levels
 
 
