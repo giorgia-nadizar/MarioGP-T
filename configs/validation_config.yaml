@@ -1,5 +1,5 @@
 levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
 test_levels: "no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks"
 train_seeds: "0;2;4"
-test_seeds: "1;3;5"
+test_seeds: "1;3;5;6;7;8;9;10"
 original_levels : "1;2;3;4;5;6;7;8;9;10;11;12;13;14;15"

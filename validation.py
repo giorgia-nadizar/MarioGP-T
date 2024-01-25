@@ -40,9 +40,10 @@ def get_levels(validation_config: Dict) -> Dict[str, str]:
 if __name__ == '__main__':
     folders = []
     start_seed = 6
-    extra = 3
+    extra = 0
     seed = start_seed + extra
-    for set_up in ["curriculum_adapt", "difficult", "second_level", "third", "curriculum_seq", "curriculum_fixed"]:
+    for set_up in ["difficult", "curriculum_seq", "curriculum_fixed", "curriculum_parallel", "difficult_parallel",
+                   "difficult_sequential"]:
         folders.append(f"results/updated_run_p1/{set_up}_seed_{seed}_{seed}")
 
     for folder_path in folders:
