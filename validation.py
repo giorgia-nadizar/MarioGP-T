@@ -31,15 +31,19 @@ def get_levels(validation_config: Dict) -> Dict[str, str]:
         for test_seed in validation_config["test_seeds"].split(";"):
             with open(f"test_levels/{test_level_prompt}_{test_seed}.txt", "r") as file:
                 levels[f"test_{test_level_prompt}_{test_seed}"] = file.read()
+    for original_level in validation_config["original_levels"].split(";"):
+        with open(f"original_levels/lvl-{original_level}.txt", "r") as file:
+            levels[f"original_{original_level}"] = file.read()
     return levels
 
 
 if __name__ == '__main__':
     folders = []
     start_seed = 6
-    extra = 3
+    extra = 0
     seed = start_seed + extra
-    for set_up in ["curriculum_adapt", "difficult", "second_level", "third", "curriculum_seq", "curriculum_fixed"]:
+    for set_up in ["difficult", "curriculum_seq", "curriculum_fixed", "curriculum_parallel", "difficult_parallel",
+                   "difficult_sequential"]:
         folders.append(f"results/updated_run_p1/{set_up}_seed_{seed}_{seed}")
 
     for folder_path in folders:
