@@ -6,14 +6,14 @@ n_individuals: 100
 p_mut_lhs: 0.3
 p_mut_rhs: 0.1
 p_mut_functions: 0.1
-n_generations: 2000
+n_generations: 4000
 selection:
   elite_size: 10
   type: "tournament"
   tour_size: 3
 survival: "truncation"
 crossover: False
-run_name: "difficult_sequential"
+run_name: "difficult_sequential_long"
 obs_size: 8
 start_port: 25000
 levels: "many_pipes,many_enemies,many_blocks"
