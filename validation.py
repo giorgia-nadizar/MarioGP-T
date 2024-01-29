@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict
+from typing import Dict
 
 import jax.numpy as jnp
 import pandas as pd
@@ -42,7 +42,8 @@ if __name__ == '__main__':
     start_seed = 0
     extra = 0
     seed = start_seed + extra
-    for set_up in ["difficult_parallel_long", "curriculum_parallel_long", "difficult_sequential_long", "curriculum_sequential_long"]:
+    for set_up in ["difficult_parallel_long", "curriculum_parallel_long", "difficult_sequential_long",
+                   "curriculum_sequential_long"]:
         folders.append(f"results/{set_up}_seed_{seed}_{seed}")
 
     for folder_path in folders:

@@ -3,6 +3,7 @@ jax~=0.4.16
 jaxlib
 numpy~=1.26.3
 yaml~=0.2.5
+pandas
 pyyaml~=6.0.1
 gymnasium~=0.28.1
 py4j~=0.10.9.7
