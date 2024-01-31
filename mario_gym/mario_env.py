@@ -21,6 +21,7 @@ class MarioEnv(gymnasium.Env):
         self.observation_size = self.grid_side ** 2
         self.render_mode = False
         self.delay = 0
+        self.debug = False
 
     @staticmethod
     def observation_to_ascii(observation: np.ndarray) -> str:
@@ -66,13 +67,13 @@ class MarioEnv(gymnasium.Env):
         java_action = ListConverter().convert(action, self.gateway._gateway_client)
         step_object = self.java_mario_env.step(java_action)
         obs = self._process_observation(step_object.observation())
-        if self.render_mode:
+        if self.debug:
             print(action)
             print()
             print(self.observation_to_ascii(obs))
+        if self.render_mode:
             time.sleep(self.delay)
-        return (obs,
-                step_object.reward(), step_object.terminated(), step_object.truncated(), step_object.information())
+        return (obs,                step_object.reward(), step_object.terminated(), step_object.truncated(), step_object.information())
 
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[
         ObsType, dict[str, Any]]:
@@ -93,3 +94,6 @@ class MarioEnv(gymnasium.Env):
 
     def save_video(self, file_name: str) -> None:
         self.java_mario_env.saveVideo(25., file_name)
+
+    def change_debug(self, debug: bool) -> None:
+        self.debug = debug
