@@ -43,9 +43,11 @@ def run(config: Dict):
     crossover_genomes = compile_crossover(config)
     mutate_genomes = compile_mutation(config, genome_mask, mutation_mask, weights_mutation_function)
 
+    initial_generation = 0
     # note: this can be used for bootstrapping the initial population
     if config.get("genomes_path") is not None:
         genomes = jnp.load(config["genomes_path"])
+        initial_generation = int(config["genomes_path"].replace(".npy", "").split("_")[1])
     else:
         rnd_key, genome_key = random.split(rnd_key, 2)
         genomes = generate_population(pop_size=config["n_individuals"], genome_mask=genome_mask, rnd_key=genome_key,
@@ -59,7 +61,7 @@ def run(config: Dict):
     best_fitnesses = []
     current_index = 0
     skip_tracker = {}
-    for _generation in range(config["n_generations"]):
+    for _generation in range(initial_generation, config["n_generations"]):
         print(f"{_generation}/{config['n_generations']}")
         start_eval = time.time()
         if isinstance(current_levels, list) and not config.get("sequential", False):
