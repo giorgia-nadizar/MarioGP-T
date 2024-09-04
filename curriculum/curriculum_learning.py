@@ -12,6 +12,24 @@ def curriculum_learning_from_config(config: Dict) -> CurriculumLearning:
             with open(f"levels/{level_prompt}_{level_seed}.txt", "r") as file:
                 current_levels.append(file.read())
         levels.append(current_levels)
+    if config.get("gradual_level_increase", False):
+        levels_with_gradual_increase = []
+        for current_levels_idx in range(len(levels) - 1):
+            current_levels = levels[current_levels_idx]
+            next_levels = levels[current_levels_idx + 1]
+            current_levels_mask = [True for _ in current_levels]
+            levels_with_gradual_increase.append(current_levels)
+            for mask_idx in range(len(current_levels_mask )- 1):
+                current_levels_mask[mask_idx] = False
+                current_gradual_levels = []
+                for gradual_level_idx in range(len(current_levels_mask)):
+                    current_gradual_levels.append(
+                        current_levels[gradual_level_idx] if current_levels_mask[gradual_level_idx]
+                        else next_levels[gradual_level_idx]
+                    )
+                levels_with_gradual_increase.append(current_gradual_levels)
+        levels_with_gradual_increase.append(levels[len(levels) - 1])
+        levels = levels_with_gradual_increase
     interval = config["n_generations"] / len(levels)
     return FixedIntervalCurriculumLearning(levels, interval)
 
