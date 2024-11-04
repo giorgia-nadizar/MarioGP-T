@@ -40,11 +40,12 @@ def get_levels(validation_config: Dict) -> Dict[str, str]:
 if __name__ == '__main__':
     folders = []
     start_seed = 0
-    extra = 0
+    extra = 10
     seed = start_seed + extra
-    for set_up in ["difficult_parallel_long", "curriculum_parallel_long", "difficult_sequential_long",
-                   "curriculum_sequential_long"]:
-        folders.append(f"results/{set_up}_seed_{seed}_{seed}")
+    for sd in range(seed):
+        for set_up in ["difficult_parallel_long", "curriculum_parallel_long", "difficult_sequential_long",
+                       "curriculum_sequential_long", "curriculum_parallel_gradual"]:
+            folders.append(f"results/{set_up}_seed_{sd}_{sd}")
 
     for folder_path in folders:
         print(folder_path)
