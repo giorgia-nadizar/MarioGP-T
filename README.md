@@ -32,3 +32,15 @@ python3 main.py config_file_name
   at [https://github.com/giorgia-nadizar/MarioAI](https://github.com/giorgia-nadizar/MarioAI)
 - The code for generating the Mario levels is adapted
   from [https://github.com/shyamsn97/mario-gpt](https://github.com/shyamsn97/mario-gpt)
+
+## Citation
+If you use this code in your project please cite
+```
+@inproceedings{jorgensen2024large,
+  title={Large Language Model-based Test Case Generation for GP Agents},
+  author={Jorgensen, Steven and Nadizar, Giorgia and Pietropolli, Gloria and Manzoni, Luca and Medvet, Eric and O'Reilly, Una-May and Hemberg, Erik},
+  booktitle={Proceedings of the Genetic and Evolutionary Computation Conference},
+  pages={914--923},
+  year={2024}
+}
+```
