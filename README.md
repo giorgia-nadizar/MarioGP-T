@@ -3,6 +3,15 @@
 Graph GP for controlling Mario.
 GPT for generating the levels.
 
+## Python configuration
+
+Create the conda environment and install the requirements.
+```bash
+conda create --name mario python=3.11
+conda activate mario
+pip install -r requirements.txt
+```
+
 ## Run instructions
 
 1. Start the Java servers which will compute the simulation of Mario.
