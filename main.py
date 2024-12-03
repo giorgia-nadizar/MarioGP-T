@@ -8,7 +8,7 @@ from jax import random
 import jax.numpy as jnp
 
 import cgpax
-from cgpax.evaluation import parallel_evaluate_lgp_genomes
+from cgpax.evaluation import parallel_evaluate_lgp_genomes, parallel_evaluate_cgp_genomes
 from cgpax.individual import generate_population
 from cgpax.run_utils import update_config_with_env_data, compute_masks, compute_weights_mutation_function, \
     compile_parents_selection, compile_crossover, compile_mutation, compile_survival_selection
@@ -26,7 +26,7 @@ def run(config: Dict):
     current_levels = curriculum_learning.current_levels
     config["level"] = current_levels if isinstance(current_levels, str) else current_levels[0]
 
-    run_name = f"{config['run_name']}_{config['seed']}"
+    run_name = f"{config['solver']}_{config['run_name']}_{config['seed']}"
     os.makedirs(f"results/{run_name}", exist_ok=True)
 
     rnd_key = random.PRNGKey(config["seed"])
@@ -42,6 +42,7 @@ def run(config: Dict):
     select_survivals = compile_survival_selection(config)
     crossover_genomes = compile_crossover(config)
     mutate_genomes = compile_mutation(config, genome_mask, mutation_mask, weights_mutation_function)
+    evaluation_fn = parallel_evaluate_lgp_genomes if config["solver"] == "lgp" else parallel_evaluate_cgp_genomes
 
     initial_generation = 0
     # note: this can be used for bootstrapping the initial population
@@ -68,7 +69,7 @@ def run(config: Dict):
             all_percentages, all_dead_times = [], []
             for current_level in current_levels:
                 config["level"] = current_level
-                results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
+                results = evaluation_fn(genomes, config, ports, episode_length=1000)
                 rearranged_results = {key: [i[key] for i in results] for key in results[0]}
                 _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
                     rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
@@ -86,7 +87,7 @@ def run(config: Dict):
                     current_index = current_index % len(current_levels)
                     skip_tracker[_generation] = current_index
                     config["level"] = current_levels[current_index]
-            results = parallel_evaluate_lgp_genomes(genomes, config, ports, episode_length=1000)
+            results = evaluation_fn(genomes, config, ports, episode_length=1000)
             rearranged_results = {key: [i[key] for i in results] for key in results[0]}
             _, percentages, dead_times = jnp.asarray(rearranged_results["reward"]), jnp.asarray(
                 rearranged_results["final_percentage"]), jnp.asarray(rearranged_results["dead_time"])
@@ -155,7 +156,15 @@ def run(config: Dict):
 
 
 if __name__ == '__main__':
-    config_file = "configs/cv_sequential_config.yaml"
+    cgp_config_files = [
+        "configs/cgp_cv_parallel_config.yaml",
+        "configs/cgp_cv_parallel_gradual_config.yaml",
+        "configs/cgp_cv_sequential_config.yaml",
+        "configs/cgp_difficult_parallel_config.yaml",
+        "configs/cgp_difficult_sequential_config.yaml"
+    ]
+
+    config_file = "configs/cgp_cv_sequential_config.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
