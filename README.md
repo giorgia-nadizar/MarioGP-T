@@ -1,9 +1,15 @@
 # Mario GP-T
 
-Graph GP for controlling Mario.
-GPT for generating the levels.
+This repository contains the code for reproducing the experimental pipeline of two papers: "Large Language Model-based Test Case Generation for GP Agents" and "Policy Search through Genetic Programming and LLM-assisted Curriculum Learning" (see the full citations at the end of the readme).
 
-## Python configuration
+The core idea of both papers is to optimize a controller for Super Mario Bros using Graph-based Genetic Programming (GGP).
+The controller is optimized using curriculum learning on a set of levels generated with Mario-GPT, a fine tuned GPT model.
+
+<img width="450" height="450" alt="super-mario-bros-image" src="https://github.com/user-attachments/assets/9aa3edc5-055f-48f1-8af0-8a4c8351dcea" />
+
+## Run instructions
+
+### Python configuration
 
 Create the conda environment and install the requirements.
 ```bash
@@ -12,7 +18,7 @@ conda activate mario
 pip install -r requirements.txt
 ```
 
-## Run instructions
+### Running an experiment
 
 1. Start the Java servers which will compute the simulation of Mario.
    The following command will start 100 servers on 100 consecutive ports starting from port 25000.
