@@ -53,3 +53,11 @@ If you use this code in your project please cite
   year={2024}
 }
 ```
+```
+@article{jorgensen2025policy,
+  title={Policy Search through Genetic Programming and LLM-assisted Curriculum Learning},
+  author={Jorgensen, Steven and Nadizar, Giorgia and Pietropolli, Gloria and Manzoni, Luca and Medvet, Eric and O'Reilly, Una-May and Hemberg, Erik},
+  journal={Under review},
+  year={2025}
+}
+```
