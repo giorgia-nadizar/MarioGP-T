@@ -51,7 +51,7 @@ pip install -r requirements.txt
    For the config file, it must be located in the `configs` folder, and its name should be specified without location.
 
 ```bash
-python3 main.py config_file_name
+python3 scripts/optimization.py config_file_name
 ```
 
 3. Files will be saved to the `results` folder, within an internal folder named after the run.
