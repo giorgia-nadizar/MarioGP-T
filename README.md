@@ -15,6 +15,10 @@ This repository contains various elements:
 - `levels` contains the Super Mario Bros levels used as test cases for optimization. All levels are specificied in a textual format; an image representation is provided in the subfolder `imgs`.
 - `mario_gym` is the Python package containing the gym wrapper for the Super Mario Bros simulation environment, which is originally written in Java.
 - `original_levels` contains a sample of 15 original levels from the Super Mario Bros game.
+- `scripts` contains all files to run experiments, validations, or post-hoc analyses:
+   - `policy_representation.py` represents a policy in the form of equations.
+   - `policy_visualization.py` visualizes a video of a policy.
+   - `optimization.py` runs an evolutionary experiment (see below the details on how to run it).
 - `server` contains the Java artifacts for running the Super Mario Bros simulation. The original Java code is available at [MarioAI](https://github.com/giorgia-nadizar/MarioAI).
 - `test_levels` contains additional Super Mario Bros levels used for validation.
 - `videos` contains a sample of videos of how policies control the agent in a game environment.
