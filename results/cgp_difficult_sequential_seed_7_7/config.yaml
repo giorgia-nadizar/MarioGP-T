@@ -1,0 +1,56 @@
+adaptive: false
+buffer_size: 116
+crossover: false
+genome_size: 205
+level: '-----------------------------------------------------------------------------------------------------
+
+  -----------------------------------------------------------------------------------------------------
+
+  ----------------------SSSSSSSSSSSSSSSSSSS?SSSSSSSSSSSSSSSSSSSSSSSS---SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
+  ---------------------------SSSSSSSSS------SSSSSSSSSSSSSSS-------[]---SSSSSSSSSSSSSSSSSSSSSSSS--------
+
+  -xxxxx---------------------SSSSSSSSS------SSSSSSSSSSSSSSS-------[]---SSSSSSSSSSSSSSSSSSSSSSSS--------
+
+  xxXX--x----------x---------SSSSSSSSS------SSSSSSSSSSSSSSS-------[]---SSSSSSSSSSSSSSSSSSSSSSSS--QQ----
+
+  XXXX---x----------x--------------------xxxxx--------------------[]-----------------------------------
+
+  XXXX----x----------x-------xxx----xxxxxx----x-------------------[]----------xxx-------------xxx-xxx--
+
+  XXXX-----x----------x------x--xxxxxE--<>-----x-----xxxxxxx------[]---xxxxxxxx?-xxxxxxxxxxxxxx--xx--xx
+
+  XXXX---S--x----------x-----S--SSSSSS--[]------x-xxxx-<><>-x-----[]--xx-SSSSSS??SSSSSSSSSSSSSS--QQ--QQ
+
+  XXXX-------x----------x---------------[]-------xxXXX-[][]--x----<>-xx--SSSSS---SSSSSSSSSSSSSS--------
+
+  XXXX--------xx---------x--------------[]-------EXXXX-[][]---x-----xx---SSSSS---SSSSSSSSSSSSSS--------
+
+  XXXX--------X-xxxx----X-xxxx----------[]------E-XXXX-[][]----xxxxxx---------oooSSSSSSSSSSSSSS--------
+
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-XXXEXXXXX-XXXXXXEXXXXXXX---XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+levels: many_pipes,many_enemies,many_blocks
+levels_seeds: 0;2;4
+n_constants: 2
+n_functions: 14
+n_generations: 4000
+n_in: 66
+n_in_env: 64
+n_individuals: 100
+n_nodes: 50
+n_out: 5
+obs_size: 8
+p_mut_functions: 0.1
+p_mut_inputs: 0.1
+p_mut_outputs: 0.3
+run_name: difficult_sequential_seed_7
+seed: 7
+selection:
+  elite_size: 10
+  tour_size: 3
+  type: tournament
+sequential: true
+solver: cgp
+stagnation_interval: 10
+start_port: 25000
+survival: truncation

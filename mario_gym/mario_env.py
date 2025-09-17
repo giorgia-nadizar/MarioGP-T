@@ -26,7 +26,9 @@ class MarioEnv(gymnasium.Env):
     @staticmethod
     def observation_to_ascii(observation: np.ndarray) -> str:
         side = int(np.sqrt(len(observation)))
+        print(observation)
         observation = observation.reshape(side, side)
+        print(observation)
         center = len(observation) // 2
         observation[center][center] = 5.
         string_obs = np.array2string(observation, max_line_width=100)

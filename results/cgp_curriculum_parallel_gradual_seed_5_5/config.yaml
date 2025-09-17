@@ -1,0 +1,55 @@
+adaptive: false
+buffer_size: 116
+crossover: false
+genome_size: 205
+gradual_level_increase: true
+level: '----------------------------------------------------------------------------------------------------
+
+  xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxx------------------------------xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-----
+
+  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS-x---SSSSSSSSSSSSSSSSS--------xxSSSSSSSSSSSSSSSSSSSSSSSSSSSSS-x---S
+
+  -----------------------------------x--SSSS--------------------xx--------------------------------x--S
+
+  ------------------------------------x-SSSS---------------XXX-xx----------------------------------x-S
+
+  ------E------------------------------xSSSS--------------xxxx-xSSS-----------E---------------------xS
+
+  -----<>-------------------------------x----------------xx---xx-------------<>----------------------x
+
+  XXX--[]--------------------------------x--------------xx-----xS------------[]-----------------------
+
+  --E--[]-----------------E--------------oxxx------xxxxxx------S-S-----------[]------S----------------
+
+  -<>--[]-------------E--<>-------------S?SS-x----xx-XXXX---------S-----E--SS[]S---E----E------------S
+
+  -[]--[]------------<>--[]-------E-----SSS---x--xx--------------------<>----[]---<>---<>------E-----S
+
+  o[]--[]------------[]--[]------<>-----SS-----xxx---------------------[]----[]---[]---[]-----<>-----S
+
+  []]--[]--------E-E-[]--[]------[]-------E-EE--xX---------------------[]-E--[]---[]---[]-----[]------
+
+  XXX--XX--XXXXXXXXXXXXXXXX--XXXXXXXXXXXXX-XXXXXXX-------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+levels: no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks
+levels_seeds: 0;2;4
+n_constants: 2
+n_functions: 14
+n_generations: 1333
+n_in: 66
+n_in_env: 64
+n_individuals: 100
+n_nodes: 50
+n_out: 5
+obs_size: 8
+p_mut_functions: 0.1
+p_mut_inputs: 0.1
+p_mut_outputs: 0.3
+run_name: cgp_curriculum_parallel_gradual_seed_5
+seed: 5
+selection:
+  elite_size: 10
+  tour_size: 3
+  type: tournament
+solver: cgp
+start_port: 25000
+survival: truncation

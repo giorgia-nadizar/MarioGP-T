@@ -1,0 +1,56 @@
+adaptive: false
+buffer_size: 116
+crossover: false
+genome_size: 205
+level: '----------------------------------------------------------------------------------------------------
+
+  -----------------------------------------------------------------------------------------xxxxxxxxxxx
+
+  S-SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS--------xxSSSSSSSSSS
+
+  ----[]----[]-----------------------------------SSSSSSSSSSSSSSSSSSSSSSSS----------------xx-----------
+
+  ----[]----[]-------E----------------xxx--------SSSSSSSSSSSSSSSSSSSSSSSS-----------XXX-xx------------
+
+  ----[]----[]---QQQQQQ--------xxxxxxxx--x-------SSSSSSSSSSSSSSSSSSSSSSSS--QQ------xxxx-xSSS----------
+
+  ----<>----[]----------------xxSSSSSSS---xxxxxx----------------------------------xx---xx-------------
+
+  ----------[]---------------xx-SSSSSSS--SSSSSS-x------xxx--------------xxx-xxx--xx-----xS------------
+
+  ----------[]--xxxxxxxxxxxxxx--SSSSSSS--SSSSSS--xxxxxxx?-xxxxxxxxxxxxxxx--xx--xxx------S-S-----------
+
+  ----------[]-xxSSSSSSSSSSSSS--SSSSSSS--SSSSSS??SSSSSSS??SSSSSSSSSSSSSSS--QQ--QQQ---------S-----E--SS
+
+  ----------<>xx-SSSSSSSSSSSSS---------------------SSSS---SSSSSSSSSSSSSSS-----------------------<>----
+
+  --xxxx-----xx--SSSSSSSSSSSSS---------<>----------SSSS---SSSSSSSSSSSSSSS-----------------------[]----
+
+  xxx---xxxxxx---SSSSSSSSSSSSS---------[]--------------oooSSSSSSSSSSSSSSS-----------------------[]-E--
+
+  XXX---XXXXXXE--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX------XXXXXXXXXXXXXX'
+levels: no_pipes,no_enemies,little_blocks;no_pipes,some_enemies,little_blocks;some_pipes,some_enemies,little_blocks;many_pipes,many_enemies,many_blocks
+levels_seeds: 0;2;4
+n_constants: 2
+n_functions: 14
+n_generations: 4000
+n_in: 66
+n_in_env: 64
+n_individuals: 100
+n_nodes: 50
+n_out: 5
+obs_size: 8
+p_mut_functions: 0.1
+p_mut_inputs: 0.1
+p_mut_outputs: 0.3
+run_name: cgp_curriculum_sequential_long_seed_9
+seed: 9
+selection:
+  elite_size: 10
+  tour_size: 3
+  type: tournament
+sequential: true
+solver: cgp
+stagnation_interval: 10
+start_port: 25000
+survival: truncation
