@@ -15,6 +15,7 @@ This repository contains various elements:
 - `levels` contains the Super Mario Bros levels used as test cases for optimization. All levels are specificied in a textual format; an image representation is provided in the subfolder `imgs`.
 - `mario_gym` is the Python package containing the gym wrapper for the Super Mario Bros simulation environment, which is originally written in Java.
 - `original_levels` contains a sample of 15 original levels from the Super Mario Bros game.
+- `results` contains all the results of the optimization experiments included in the paper organized in different subfolders. There is also a Jupyter notebook named `analysis.ipynb` which reproduces all the plots and the statistical tests of the paper.
 - `scripts` contains all files to run experiments, validations, or post-hoc analyses:
    - `optimization.py` runs an evolutionary experiment (see below the details on how to run it).
    - `policy_representation.py` represents a policy in the form of equations.
