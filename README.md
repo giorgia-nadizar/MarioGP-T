@@ -14,6 +14,7 @@ This repository contains various elements:
 - `curriculum` is the Python package dealing with the generation and organization of test cases (i.e., Super Mario Bros levels) into a curriculum.
 - `levels` contains the Super Mario Bros levels used as test cases for optimization. All levels are specificied in a textual format; an image representation is provided in the subfolder `imgs`.
 - `mario_gym` is the Python package containing the gym wrapper for the Super Mario Bros simulation environment, which is originally written in Java.
+- `original_levels` contains a sample of 15 original levels from the Super Mario Bros game.
 
 ## Run instructions
 
