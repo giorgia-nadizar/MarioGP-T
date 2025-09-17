@@ -51,7 +51,7 @@ if __name__ == '__main__':
         print(folder_path)
         best_genome = get_final_best(folder_path)
         config = cgpax.get_config(f"{folder_path}/config.yaml")
-        validation_levels = get_levels(cgpax.get_config("configs/validation_config.yaml"))
+        validation_levels = get_levels(cgpax.get_config("../configs/validation_config.yaml"))
         validation_dicts = []
         for validation_prompt, validation_level in validation_levels.items():
             print(f"\t{validation_prompt}")

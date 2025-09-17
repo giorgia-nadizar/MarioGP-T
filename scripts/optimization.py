@@ -172,7 +172,7 @@ if __name__ == '__main__':
         "configs/lgp_difficult_sequential.yaml"
     ]
 
-    config_file = "configs/cgp_cl_sequential.yaml"
+    config_file = "../configs/cgp_cl_sequential.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
