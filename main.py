@@ -157,14 +157,22 @@ def run(config: Dict):
 
 if __name__ == '__main__':
     cgp_config_files = [
-        "configs/cgp_cv_parallel_config.yaml",
-        "configs/cgp_cv_parallel_gradual_config.yaml",
-        "configs/cgp_cv_sequential_config.yaml",
-        "configs/cgp_difficult_parallel_config.yaml",
-        "configs/cgp_difficult_sequential_config.yaml"
+        "configs/cgp_cl_parallel.yaml",
+        "configs/cgp_cl_parallel_gradual.yaml",
+        "configs/cgp_cl_sequential.yaml",
+        "configs/cgp_difficult_parallel.yaml",
+        "configs/cgp_difficult_sequential.yaml"
     ]
 
-    config_file = "configs/cgp_cv_sequential_config.yaml"
+    lgp_config_files = [
+        "configs/lgp_cl_parallel.yaml",
+        "configs/lgp_cl_parallel_gradual.yaml",
+        "configs/lgp_cl_sequential.yaml",
+        "configs/lgp_difficult_parallel.yaml",
+        "configs/lgp_difficult_sequential.yaml"
+    ]
+
+    config_file = "configs/cgp_cl_sequential.yaml"
     # note: read config file name if passed
     if len(sys.argv) > 1:
         config_file = f"configs/{sys.argv[1]}"
