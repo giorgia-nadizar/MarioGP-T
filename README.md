@@ -7,6 +7,11 @@ The controller is optimized using curriculum learning on a set of levels generat
 
 <img width="450" height="450" alt="super-mario-bros-image" src="https://github.com/user-attachments/assets/9aa3edc5-055f-48f1-8af0-8a4c8351dcea" />
 
+## Repository content description
+This repository contains various elements:
+- `cgpax` is the Python package which contains all the artifacts related to graph optimization with GPP. It is taken and adapted from [cgpax](https://github.com/giorgia-nadizar/cgpax).
+- `configs` contains all the config files in `yaml` format with the specifications of the various experiments (both optimization and validation).
+
 ## Run instructions
 
 ### Python configuration
