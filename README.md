@@ -11,6 +11,7 @@ The controller is optimized using curriculum learning on a set of levels generat
 This repository contains various elements:
 - `cgpax` is the Python package which contains all the artifacts related to graph optimization with GPP. It is taken and adapted from [cgpax](https://github.com/giorgia-nadizar/cgpax).
 - `configs` contains all the config files in `yaml` format with the specifications of the various experiments (both optimization and validation).
+- `curriculum` is the Python package dealing with the generation and organization of test cases (i.e., Super Mario Bros levels) into a curriculum.
 
 ## Run instructions
 
